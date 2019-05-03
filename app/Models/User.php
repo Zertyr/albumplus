@@ -36,4 +36,23 @@ class User extends Authenticatable implements MustVerifyEmail
     protected $casts = [
         'email_verified_at' => 'datetime',
     ];
+
+    /**
+     * Get the images.
+     */
+    public function images() 
+    {
+        return $this->hasMany (Image::class);
+    }
+
+    /**
+     * User is admin
+     * 
+     * @return integer
+     */
+
+     public function getAdminAttribute()
+     {
+         return $this->role === 'admin';
+     }
 }

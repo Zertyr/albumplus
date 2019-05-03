@@ -11,7 +11,7 @@
     <title>{{ config('app.name', 'album') }}</title>
 
     <!-- Scripts -->
-    <script src="{{ asset('js/app.js') }}" defer></script>
+    <script src="{{ asset('js/app.js') }}"></script>
 
     <!-- Fonts -->
     <link rel="dns-prefetch" href="//fonts.gstatic.com">
@@ -35,19 +35,33 @@
                 <div class="collapse navbar-collapse" id="navbarSupportedContent">
                     <!-- Left Side Of Navbar -->
                     <ul class="navbar-nav mr-auto">
-
+                        @admin
+                            <li class="nav-item dropdown">
+                                <a class="nav-link dropdown-toggle{{ currentRoute(route('category.create'),route('category.index'),route('category.edit', request()->category?: 0))}}" href="#" id="navbarDropdownGestCat" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    @lang('Administration')
+                                </a>
+                                <div class="dropdown-menu" aria-labelledby="navbarDropdownGestCat">
+                                    <a class="dropdown-item" href="{{ route('category.create') }}">
+                                        <i class="fas fa-plus fa-lg"></i> @lang('Ajouter une catégorie')
+                                    </a>
+                                    <a class="dropdown-item" href="{{ route('category.index') }}">
+                                        <i class="fas fa-wrench fa-lg"></i> @lang('Gérer les catégorie')
+                                    </a>
+                                </div>
+                            </li>
+                        @endadmin
                     </ul>
 
                     <!-- Right Side Of Navbar -->
                     <ul class="navbar-nav ml-auto">
                         <!-- Authentication Links -->
                         @guest
-                            <li class="nav-item">
-                                <a class="nav-link{{ currentRoute(route('login')) }}" href="{{ route('login') }}">@lang('Connexion')</a>
+                            <li class="nav-item{{ currentRoute(route('login')) }}">
+                                <a class="nav-link" href="{{ route('login') }}">@lang('Connexion')</a>
                             </li>
                             @if (Route::has('register'))
-                                <li class="nav-item">
-                                    <a class="nav-link{{ currentRoute(route('register')) }}" href="{{ route('register') }}">@lang('Inscription')</a>
+                                <li class="nav-item{{ currentRoute(route('register')) }}">
+                                    <a class="nav-link" href="{{ route('register') }}">@lang('Inscription')</a>
                                 </li>
                             @endif
                         @else
@@ -75,6 +89,16 @@
         </nav>
 
         <main class="py-4">
+            @if (session('ok'))
+                <div class="container">
+                    <div class="alert alert-dismissible alert-success fade show" role="alert">
+                        {{ session('ok') }}
+                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                </div>
+            @endif
             @yield('content')
         </main>
     </div>
