@@ -14,13 +14,13 @@ class CreateImagesTable extends Migration
     public function up()
     {
         Schema::create('images', function (Blueprint $table) {
-            $table->bigIncrements('id');
-            $table->bigInteger('category_id')->unsigned();
-            $table->bigInteger('user_id')->unsigned();
+            $table->increments('id');
+            $table->integer('category_id')->unsigned();
+            $table->integer('user_id')->unsigned();
             $table->string('name');
             $table->string('description')->nullable();
             $table->boolean('adult')->default(false);
-            $table->integer('clicks')->unsigned()->default(0);
+            $table->integer ('clicks')->unsigned()->default(0);
             $table->foreign('category_id')->references('id')->on('categories')->onDelete('cascade');
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
             $table->timestamps();
@@ -37,3 +37,4 @@ class CreateImagesTable extends Migration
         Schema::dropIfExists('images');
     }
 }
+

@@ -1,10 +1,12 @@
 <script>
     $(() => {
+
         $.ajaxSetup({
-            headers: {'X-CRSF-TOKEN': $('meta[name="crsf-token"]').attr('content')}
+            headers: {'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')}
         })
-        $('[data-toogle="tooltip"]').tooltip()
-        
+
+        $('[data-toggle="tooltip"]').tooltip()
+
         $('a.btn-danger').click((e) => {
             let that = $(e.currentTarget)
             e.preventDefault()
@@ -12,9 +14,9 @@
                 title: '{{ $text }}',
                 type: 'error',
                 showCancelButton: true,
-                confirmButtonColor: "#DD6B55",
+                confirmButtonColor: '#DD6B55',
                 confirmButtonText: '@lang('Oui')',
-                cancelButtonText: '@lang('Non')',
+                cancelButtonText: '@lang('Non')'
             }).then((result) => {
                 if (result.value) {
                     $.ajax({
@@ -42,3 +44,5 @@
         })
     })
 </script>
+
+

@@ -5,27 +5,23 @@ use App\Models\Category;
 
 class CategoriesTableSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     *
-     * @return void
-     */
+
     public function run()
     {
         Category::create([
-            'name' => 'Manhua',
+            'name' => 'Paysages',
         ]);
         Category::create([
-            'name' => 'webtoon',
+            'name' => 'Maisons',
         ]);
         Category::create([
-            'name' => 'light novel',
+            'name' => 'Personnages',
         ]);
         Category::create([
-            'name' => 'hentai',
+            'name' => 'Animaux',
         ]);
         Category::create([
-            'name' => 'doujin',
+            'name' => 'Végétation',
         ]);
     }
 }

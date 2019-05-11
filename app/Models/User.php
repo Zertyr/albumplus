@@ -16,7 +16,7 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password',
+        'name', 'email', 'password', 'settings'
     ];
 
     /**
@@ -29,30 +29,41 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
-     * The attributes that should be cast to native types.
-     *
-     * @var array
-     */
-    protected $casts = [
-        'email_verified_at' => 'datetime',
-    ];
-
-    /**
      * Get the images.
      */
-    public function images() 
+    public function images()
     {
         return $this->hasMany (Image::class);
     }
 
     /**
-     * User is admin
-     * 
+     * User is admin.
+     *
      * @return integer
      */
+    public function getAdminAttribute()
+    {
+        return $this->role === 'admin';
+    }
 
-     public function getAdminAttribute()
-     {
-         return $this->role === 'admin';
-     }
+    /**
+     * Get the adult status.
+     *
+     * @return boolean
+     */
+    public function getAdultAttribute()
+    {
+        return $this->settings->adult;
+    }
+
+    /**
+     * Get the settings.
+     *
+     * @param Json $value
+     * @return integer
+     */
+    public function getSettingsAttribute($value)
+    {
+        return json_decode ($value);
+    }
 }

@@ -2,17 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
+use App\Repositories\ImageRepository;
 
 class HomeController extends Controller
 {
     /**
-     * Show the application dashboard.
+     * Show the galerie.
      *
-     * @return \Illuminate\Contracts\Support\Renderable
+     * @param  \App\Repositories\ImageRepository $repository
+     * @return \Illuminate\Http\Response
      */
-    public function index()
+    public function index(ImageRepository $repository)
     {
-        return view('home');
+        $images = $repository->getAllImages ();
+
+        return view ('home', compact ('images'));
     }
 }

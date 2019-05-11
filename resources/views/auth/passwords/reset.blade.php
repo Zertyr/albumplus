@@ -2,42 +2,44 @@
 
 @section('card')
 
-  @component('components.card')
+    @component('components.card')
 
-    @slot('title')
-      @lang('Renouvellement du mot de passe')
-    @endslot
+        @slot('title')
+            @lang('Renouvellement du mot de passe')
+        @endslot
 
-    <form method="post" action="{{ rout('password.request ')}}">
-      {{crsf_field() }}
+        <form method="POST" action="{{ route('password.request') }}">
+            @csrf
 
-      <input type="hidden" name="token" value="{{ $token }}">
+            <input type="hidden" name="token" value="{{ $token }}">
 
-      @include('partials.form.group', [
-      'title' => __('Adresse email')
-      'type' => 'email',
-      'name' => 'email',
-      'required' => true,
-      ])
+            @include('partials.form-group', [
+                'title' => __('Adresse email'),
+                'type' => 'email',
+                'name' => 'email',
+                'required' => true,
+                ])
 
-      @include('partials.form.group', [
-      'title' => __('Mot de passe'),
-      'type' => 'password',
-      'name' => 'password',
-      'required' => true,
-      ])
+            @include('partials.form-group', [
+                'title' => __('Mot de passe'),
+                'type' => 'password',
+                'name' => 'password',
+                'required' => true,
+                ])
 
-      @include('partials.form.group', [
-      'title' => __('Confirmation du mot de passe'),
-      'type' => 'password',
-      'name' => 'password_confirmation',
-      'required' => true,
-      ])
+            @include('partials.form-group', [
+                'title' => __('Confirmation du mot de passe'),
+                'type' => 'password',
+                'name' => 'password_confirmation',
+                'required' => true,
+                ])
 
-      @component('components.button')
-        @lang('Renouveller')
-      @endcomponent
+            @component('components.button')
+                @lang('Renouveller')
+            @endcomponent
 
-    </form>
-  @endcomponent
+        </form>
+
+    @endcomponent            
+
 @endsection

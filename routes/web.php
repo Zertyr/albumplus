@@ -13,11 +13,28 @@
 
 Auth::routes(['verify' => true]);
 
-Route::get('/', 'HomeController@index')->name('home')->middleware('verified');
+Route::get('/', 'HomeController@index')->name('home');
 
-Route::middleware('admin')->group(function () {
-    
+Route::middleware ('admin')->group (function () {
+
     Route::resource ('category', 'CategoryController', [
         'except' => 'show'
     ]);
+
 });
+
+Route::middleware ('auth', 'verified')->group (function () {
+    Route::resource ('image', 'ImageController', [
+        'only' => ['create', 'store', 'destroy', 'update']
+    ]);
+    Route::name ('image.')->middleware ('ajax')->group (function () {
+        Route::prefix('image')->group(function () {
+            Route::name ('description')->put ('{image}/description', 'ImageController@descriptionUpdate');
+            Route::name ('adult')->put ('{image}/adult', 'ImageController@adultUpdate');
+        });
+    });
+});
+
+Route::name ('category')->get ('category/{slug}', 'ImageController@category');
+
+Route::name ('user')->get ('user/{user}', 'ImageController@user');
