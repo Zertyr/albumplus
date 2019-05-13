@@ -18,6 +18,23 @@
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item dropdown">
+                <a class="nav-link" href="#" id="navbarDropdownFlag" role="button" data-toggle="dropdown"
+                    aria-haspopup="true" aria-expanded="false">
+                    <img width="32" height="32" alt="{{ session('locale') }}"
+                            src="{!! asset('images/flags/' . session('locale') . '-flag.png') !!}"/>
+                </a>
+                <div id="flags" class="dropdown-menu" aria-labelledby="navbarDropdownFlag">
+                    @foreach(config('app.locales') as $locale)
+                        @if($locale != session('locale'))
+                            <a class="dropdown-item" href="{{ route('language', $locale) }}">
+                                <img width="32" height="32" alt="{{ session('locale') }}"
+                                        src="{!! asset('images/flags/' . $locale . '-flag.png') !!}"/>
+                            </a>
+                        @endif
+                    @endforeach
+                </div>
+            </li>
+            <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle
                     @isset($category)
                         {{ currentRoute(route('category', $category->slug)) }}
@@ -32,12 +49,27 @@
                     @endforeach
                 </div>
             </li>
+            @isset($albums)
+                <li class="nav-item dropdown">
+                    <a href="#" class="nav-link dropdown-toggle @isset($album) {{ currentRoute(route('album', $album->slug)) }} @endisset" id="navbarDropdownAlbum" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                        @lang('Albums')
+                    </a>
+                    <div class="dropdown-menu" aria-labelledby="navbarDropdownAlbum">
+                        @foreach($albums as $album)
+                            <a href="{{ route('album', $album->slug) }}">{{ $album->name }}</a>
+                        @endforeach
+                    </div>
+                </li>
+            @endisset
             @admin
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle{{ currentRoute(
                                         route('category.create'),
                                         route('category.index'),
-                                        route('category.edit', request()->category?: 0)
+                                        route('category.edit', request()->category?: 0),
+                                        route('orphans.index'),
+                                        route('maintenance.index'),
+                                        route('user.index')
                                     )}}" href="#" id="navbarDropdownGestCat" role="button" data-toggle="dropdown"
                    aria-haspopup="true" aria-expanded="false">
                     @lang('Administration')
@@ -49,12 +81,25 @@
                     <a class="dropdown-item" href="{{ route('category.index') }}">
                         <i class="fas fa-wrench fa-lg"></i> @lang('Gérer les catégories')
                     </a>
+                    <a class="dropdown-item" href="{{ route('orphans.index') }}">
+                        <i class="fas fa-images fa-lg"></i> @lang('Photos orphelines')
+                    </a>
+                    <a class="dropdown-item" href="{{ route('maintenance.index') }}">
+                        <i class="fas fa-cogs fa-lg"></i> @lang('Mode maintenance')
+                    </a>
+                    <a class="dropdown-item" href="{{ route('user.index') }}">
+                        <i class="fas fa-users fa-lg"></i> @lang('Utilisateurs')
+                    </a>
                 </div>
             </li>
             @endadmin
             @auth
                 <li class="nav-item dropdown">
-                    <a class="nav-link dropdown-toggle{{ currentRoute(route('image.create'))}}"
+                    <a class="nav-link dropdown-toggle{{ currentRoute(
+                                        route('image.create'),
+                                        route('album.create'),
+                                        route('album.index')
+                                        )}}"
                     href="#" id="navbarDropdownGestAlbum" role="button" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                         @lang('Gestion')
@@ -62,6 +107,12 @@
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownGestAlbum">
                         <a class="dropdown-item" href="{{ route('image.create') }}">
                             <i class="fas fa-images fa-lg"></i> @lang('Ajouter une image')
+                        </a>
+                        <a class="dropdown-item" href="{{ route('album.create') }}">
+                            <i class="fas fa-folder-open fa-lg"></i> @lang('Ajouter un album')
+                        </a>
+                        <a class="dropdown-item" href="{{ route('album.index') }}">
+                            <i class="fas fa-wrench fa-lg"></i> @lang('Gérer les albums')
                         </a>
                     </div>
                 </li>
@@ -72,6 +123,28 @@
             <li class="nav-item{{ currentRoute(route('login')) }}"><a class="nav-link" href="{{ route('login') }}">@lang('Connexion')</a></li>
             <li class="nav-item{{ currentRoute(route('register')) }}"><a class="nav-link" href="{{ route('register') }}">@lang('Inscription')</a></li>
             @else
+                @maintenance
+                    <li class="nav-item">
+                        <a href="{{ route('maintenance.index') }}" class="nav-link" data-toggle="tooltip" title="@lang('Mode maintenance')">
+                            <span class="fas fa-exclamation-circle fa-lg" style="color:red;"></span>
+                        </a>
+                    </li>
+                @endmaintenance
+                @unless(auth()->user()->unreadNotifications->isEmpty())
+                    <li class="nav-item">
+                        <a href="{{ route('notification.index') }}">
+                            <span class="fa-layers fa-fw">
+                                <span style="color: yellow" class="fas fa-bell fa-lg" data-fa-transform="grow-2"></span>
+                                <span style="color: black; font-weight:900" class="fa-layers-text fa-inverse" data-fa-transform="shrink-4 up-2 left-1">{{ auth()->user()->unreadNotifications->count() }}</span>
+                            </span>
+                        </a>
+                    </li>
+                @endunless
+                <li class="nav-item{{ currentRoute(
+                            route('profile.edit', auth()->id()),
+                            route('profile.show', auth()->id())) }}">
+                    <a class="nav-link" href="{{ route('profile.edit', auth()->id()) }}">@lang('Profil')</a>
+                </li>
                 <li class="nav-item">
                     <a id="logout" class="nav-link" href="{{ route('logout') }}">@lang('Déconnexion')</a>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hide">

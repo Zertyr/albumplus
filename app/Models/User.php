@@ -5,7 +5,7 @@ namespace App\Models;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-
+use App\Events\UserCreated;
 class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
@@ -19,6 +19,16 @@ class User extends Authenticatable implements MustVerifyEmail
         'name', 'email', 'password', 'settings'
     ];
 
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'email_verified_at',
+    ];
+
+    protected $dispatchesEvents = [
+        'created' => UserCreated::class,
+    ];
+    
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -65,5 +75,28 @@ class User extends Authenticatable implements MustVerifyEmail
     public function getSettingsAttribute($value)
     {
         return json_decode ($value);
+    }
+
+    public function getPaginationAttribute()
+    {
+        return $this->settings->pagination;
+    }
+
+    public function albums()
+    {
+        return $this->hasMany (Album::class);
+    }
+
+    public function setAdultAttribute($value)
+    {
+        $this->attributes['settings'] = json_encode ([
+            'adult'=> $value,
+            'pagination' => $this->settings->pagination
+        ]);
+    }
+
+    public function imagesRated()
+    {
+        return $this->belongsToMany (Image::class);
     }
 }

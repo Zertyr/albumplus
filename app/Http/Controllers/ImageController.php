@@ -4,10 +4,12 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Repositories\ {
-    ImageRepository, CategoryRepository
+    ImageRepository, CategoryRepository, AlbumRepository, NotificationRepository
 };
 use App\Models\User;
 use App\Models\Image;
+use App\Notifications\ImageRated;
+
 class ImageController extends Controller
 {
     /**
@@ -25,6 +27,14 @@ class ImageController extends Controller
     protected $categoryRepository;
 
     /**
+     * Album repository.
+     *
+     * @var \App\Repositories\AlbumRepository
+     */
+    protected $albumRepository;
+
+
+    /**
      * Create a new ImageController instance.
      *
      * @param  \App\Repositories\ImageRepository $imageRepository
@@ -32,10 +42,12 @@ class ImageController extends Controller
      */
     public function __construct(
         ImageRepository $imageRepository,
-        CategoryRepository $categoryRepository)
+        CategoryRepository $categoryRepository,
+        AlbumRepository $albumRepository)
     {
         $this->imageRepository = $imageRepository;
         $this->categoryRepository = $categoryRepository;
+        $this->albumRepository = $albumRepository;
     }
 
     /**
@@ -118,5 +130,70 @@ class ImageController extends Controller
         $image->description = $request->description;
         $image->save();
         return $image;
+    }
+
+    public function album($slug)
+    {
+        $album = $this->albumRepository->getBySlug ($slug);
+        $images = $this->imageRepository->getImagesForAlbum ($slug);
+        return view ('home', compact ('album', 'images'));
+    }
+
+    public function albums(Request $request, Image $image)
+    {
+        $this->authorize ('manage', $image);
+        $albums = $this->albumRepository->getAlbumsWithImages ($request->user ());
+        return view ('images.albums', compact('albums', 'image'));
+    }
+
+    public function albumsUpdate(Request $request, Image $image)
+    {
+        $this->authorize ('manage', $image);
+        
+        $image->albums()->sync($request->albums);
+        $path = pathinfo (parse_url(url()->previous())['path']);
+        if($path['dirname'] === '/album') {
+            $album = $this->albumRepository->getBySlug ($path['basename']);
+            if($this->imageRepository->isNotInAlbum ($image, $album)) {
+                return response ()->json('reload');
+            }
+        }
+        return response ()->json();
+    }
+
+    public function rate(Request $request, Image $image)
+    {
+        $user = $request->user();
+
+        // Is user image owner ?
+        if($this->imageRepository->isOwner($user, $image)){
+            return response()->json(['status' => 'no']);
+        }
+
+        //rating
+        $rate = $this->imageRepository->rateImage ($user, $image, $request->value);
+        $this->imageRepository->setImageRate($image);
+
+        // Notification
+        $notificationRepository->deleteDuplicate($user, $image);
+        $image->user->notify(new ImageRated($image, $request->value, $user->id));
+        
+        return [
+            'status' => 'ok',
+            'id' => $image->id,
+            'value' => $image->rate,
+            'count' => $image->users->count(),
+            'rate' => $rate
+        ];
+    }
+
+    public function click(Request $request, Image $image)
+    {
+        if ($request->session()->has('images') && in_array ($image->id, session ('images'))) {
+            return response ()->json (['increment' => false]);
+        }
+        $request->session()->push('images', $image->id);
+        $image->increment('clicks');
+        return ['increment' => true];
     }
 }

@@ -38,4 +38,14 @@ class Image extends Model
 
         return $query->with ('user')->whereAdult(false)->latest ();
     }
+
+    public function albums()
+    {
+        return $this->belongsToMany (Album::class);
+    }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class)->withPivot('rating');
+    }
 }
