@@ -2,13 +2,25 @@
 
 namespace App\Models;
 
+use App\Events\UserCreated;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use App\Events\UserCreated;
+
 class User extends Authenticatable implements MustVerifyEmail
 {
     use Notifiable;
+
+    /**
+     * The attributes that should be mutated to dates.
+     *
+     * @var array
+     */
+    protected $dates = [
+        'created_at',
+        'updated_at',
+        'email_verified_at',
+    ];
 
     /**
      * The attributes that are mass assignable.
@@ -16,19 +28,9 @@ class User extends Authenticatable implements MustVerifyEmail
      * @var array
      */
     protected $fillable = [
-        'name', 'email', 'password', 'settings'
+        'name', 'email', 'password', 'role', 'settings', 'email_verified_at'
     ];
 
-    protected $dates = [
-        'created_at',
-        'updated_at',
-        'email_verified_at',
-    ];
-
-    protected $dispatchesEvents = [
-        'created' => UserCreated::class,
-    ];
-    
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -39,6 +41,16 @@ class User extends Authenticatable implements MustVerifyEmail
     ];
 
     /**
+     * The event map for the model.
+     *
+     * @var array
+     */
+    protected $dispatchesEvents = [
+        'created' => UserCreated::class,
+    ];
+
+
+    /**
      * Get the images.
      */
     public function images()
@@ -47,13 +59,19 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
-     * User is admin.
-     *
-     * @return integer
+     * Get the albums.
      */
-    public function getAdminAttribute()
+    public function albums()
     {
-        return $this->role === 'admin';
+        return $this->hasMany (Album::class);
+    }
+
+    /**
+     * Get the images rated by the user.
+     */
+    public function imagesRated()
+    {
+        return $this->belongsToMany (Image::class);
     }
 
     /**
@@ -67,6 +85,16 @@ class User extends Authenticatable implements MustVerifyEmail
     }
 
     /**
+     * Get the pagination value status.
+     *
+     * @return integer
+     */
+    public function getPaginationAttribute()
+    {
+        return $this->settings->pagination;
+    }
+
+    /**
      * Get the settings.
      *
      * @param Json $value
@@ -77,26 +105,27 @@ class User extends Authenticatable implements MustVerifyEmail
         return json_decode ($value);
     }
 
-    public function getPaginationAttribute()
+    /**
+     * User is admin.
+     *
+     * @return integer
+     */
+    public function getAdminAttribute()
     {
-        return $this->settings->pagination;
+        return $this->role === 'admin';
     }
 
-    public function albums()
-    {
-        return $this->hasMany (Album::class);
-    }
-
+    /**
+     * Set the adult attribute.
+     *
+     * @param  bool  $value
+     * @return void
+     */
     public function setAdultAttribute($value)
     {
         $this->attributes['settings'] = json_encode ([
-            'adult'=> $value,
+            'adult' => $value,
             'pagination' => $this->settings->pagination
         ]);
-    }
-
-    public function imagesRated()
-    {
-        return $this->belongsToMany (Image::class);
     }
 }

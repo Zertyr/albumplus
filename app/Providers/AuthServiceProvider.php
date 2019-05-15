@@ -2,15 +2,12 @@
 
 namespace App\Providers;
 
-use Illuminate\Support\Facades\Gate;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
-use App\Models\Image;
-use App\Models\User;
-use App\Models\Album;
-use App\Policies\ImagePolicy;
-use App\Policies\UserPolicy;
-use App\Policies\AlbumPolicy;
 
+use App\Policies\{
+    AlbumPolicy, ImagePolicy, UserPolicy
+};
+use App\Models\ { Image, User, Album };
 
 class AuthServiceProvider extends ServiceProvider
 {
@@ -20,10 +17,9 @@ class AuthServiceProvider extends ServiceProvider
      * @var array
      */
     protected $policies = [
-        'App\Model' => 'App\Policies\ModelPolicy',
+        Album::class => AlbumPolicy::class,
         Image::class => ImagePolicy::class,
         User::class => UserPolicy::class,
-        Album::class => AlbumPolicy::class,
     ];
 
     /**
@@ -34,7 +30,5 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-
-        //
     }
 }

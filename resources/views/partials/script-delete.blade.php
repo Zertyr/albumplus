@@ -33,7 +33,7 @@
                                 @break
                             @case('home')
                                 location.replace('/')
-                                @break
+                            @break
                         @endswitch
                     })
                     .fail(() => {

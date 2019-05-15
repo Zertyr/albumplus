@@ -12,23 +12,24 @@
 <body>
 <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="{{ route('home') }}">{{ config('app.name', 'Album') }}</a>
-    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
         <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav mr-auto">
             <li class="nav-item dropdown">
                 <a class="nav-link" href="#" id="navbarDropdownFlag" role="button" data-toggle="dropdown"
-                    aria-haspopup="true" aria-expanded="false">
+                   aria-haspopup="true" aria-expanded="false">
                     <img width="32" height="32" alt="{{ session('locale') }}"
-                            src="{!! asset('images/flags/' . session('locale') . '-flag.png') !!}"/>
+                         src="{!! asset('images/flags/' . session('locale') . '-flag.png') !!}"/>
                 </a>
                 <div id="flags" class="dropdown-menu" aria-labelledby="navbarDropdownFlag">
                     @foreach(config('app.locales') as $locale)
                         @if($locale != session('locale'))
                             <a class="dropdown-item" href="{{ route('language', $locale) }}">
                                 <img width="32" height="32" alt="{{ session('locale') }}"
-                                        src="{!! asset('images/flags/' . $locale . '-flag.png') !!}"/>
+                                     src="{!! asset('images/flags/' . $locale . '-flag.png') !!}"/>
                             </a>
                         @endif
                     @endforeach
@@ -36,7 +37,7 @@
             </li>
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle
-                    @isset($category)
+                    @isset($category) 
                         {{ currentRoute(route('category', $category->slug)) }}
                     @endisset
                     " href="#" id="navbarDropdownCat" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -45,18 +46,23 @@
                 <div class="dropdown-menu" aria-labelledby="navbarDropdownCat">
                     @foreach($categories as $category)
                         <a class="dropdown-item"
-                            href="{{ route('category', $category->slug) }}">{{ $category->name }}</a>
+                           href="{{ route('category', $category->slug) }}">{{ $category->name }}</a>
                     @endforeach
                 </div>
             </li>
             @isset($albums)
                 <li class="nav-item dropdown">
-                    <a href="#" class="nav-link dropdown-toggle @isset($album) {{ currentRoute(route('album', $album->slug)) }} @endisset" id="navbarDropdownAlbum" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    <a class="nav-link dropdown-toggle
+                        @isset($album) 
+                            {{ currentRoute(route('album', $album->slug))}}
+                        @endisset
+                        " href="#" id="navbarDropdownAlbum" role="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                         @lang('Albums')
                     </a>
                     <div class="dropdown-menu" aria-labelledby="navbarDropdownAlbum">
                         @foreach($albums as $album)
-                            <a href="{{ route('album', $album->slug) }}">{{ $album->name }}</a>
+                            <a class="dropdown-item"
+                            href="{{ route('album', $album->slug) }}">{{ $album->name }}</a>
                         @endforeach
                     </div>
                 </li>
@@ -64,7 +70,7 @@
             @admin
             <li class="nav-item dropdown">
                 <a class="nav-link dropdown-toggle{{ currentRoute(
-                                        route('category.create'),
+                                        route('category.create'), 
                                         route('category.index'),
                                         route('category.edit', request()->category?: 0),
                                         route('orphans.index'),
@@ -96,10 +102,10 @@
             @auth
                 <li class="nav-item dropdown">
                     <a class="nav-link dropdown-toggle{{ currentRoute(
-                                        route('image.create'),
                                         route('album.create'),
+                                        route('image.create'),
                                         route('album.index')
-                                        )}}"
+                                    )}}" 
                     href="#" id="navbarDropdownGestAlbum" role="button" data-toggle="dropdown"
                     aria-haspopup="true" aria-expanded="false">
                         @lang('Gestion')
@@ -120,35 +126,42 @@
         </ul>
         <ul class="navbar-nav ml-auto">
             @guest
-            <li class="nav-item{{ currentRoute(route('login')) }}"><a class="nav-link" href="{{ route('login') }}">@lang('Connexion')</a></li>
-            <li class="nav-item{{ currentRoute(route('register')) }}"><a class="nav-link" href="{{ route('register') }}">@lang('Inscription')</a></li>
+                <li class="nav-item{{ currentRoute(route('login')) }}">
+                    <a class="nav-link" href="{{ route('login') }}">@lang('Connexion')</a>
+                </li>
+                <li class="nav-item{{ currentRoute(route('register')) }}">
+                    <a class="nav-link" href="{{ route('register') }}">@lang('Inscription')</a>
+                </li>
             @else
                 @maintenance
                     <li class="nav-item">
-                        <a href="{{ route('maintenance.index') }}" class="nav-link" data-toggle="tooltip" title="@lang('Mode maintenance')">
-                            <span class="fas fa-exclamation-circle fa-lg" style="color:red;"></span>
+                        <a class="nav-link" href="{{ route('maintenance.index') }}" data-toggle="tooltip" title="@lang('Mode maintenance')">
+                            <span class="fas fa-exclamation-circle  fa-lg" style="color: red;">
+
+                            </span>
                         </a>
                     </li>
                 @endmaintenance
                 @unless(auth()->user()->unreadNotifications->isEmpty())
                     <li class="nav-item">
-                        <a href="{{ route('notification.index') }}">
+                        <a class="nav-link" href="{{ route('notification.index') }}">
                             <span class="fa-layers fa-fw">
                                 <span style="color: yellow" class="fas fa-bell fa-lg" data-fa-transform="grow-2"></span>
-                                <span style="color: black; font-weight:900" class="fa-layers-text fa-inverse" data-fa-transform="shrink-4 up-2 left-1">{{ auth()->user()->unreadNotifications->count() }}</span>
+                                <span class="fa-layers-text fa-inverse" data-fa-transform="shrink-4 up-2 left-1" style="color: black; font-weight:900">{{ auth()->user()->unreadNotifications->count() }}</span>
                             </span>
                         </a>
                     </li>
                 @endunless
                 <li class="nav-item{{ currentRoute(
                             route('profile.edit', auth()->id()),
-                            route('profile.show', auth()->id())) }}">
+                            route('profile.show', auth()->id())
+                        )}}">
                     <a class="nav-link" href="{{ route('profile.edit', auth()->id()) }}">@lang('Profil')</a>
                 </li>
                 <li class="nav-item">
                     <a id="logout" class="nav-link" href="{{ route('logout') }}">@lang('Déconnexion')</a>
                     <form id="logout-form" action="{{ route('logout') }}" method="POST" class="hide">
-                        {{ csrf_field() }}
+                        @csrf
                     </form>
                 </li>
             @endguest
@@ -168,6 +181,13 @@
 @endif
 
 @yield('content')
+
+<nav class="navbar navbar-expand fixed-bottom navbar-dark bg-dark">
+    <div class="navbar-nav ml-auto">
+        <a class="nav-item nav-link {{ currentUrl('legal') }}" href="{{ url('legal') }}">@lang('Mentions légales')</a>
+        <a class="nav-item nav-link {{ currentUrl('privacy') }}" href="{{ url('privacy') }}">@lang('Politique de confidentialité')</a>
+    </div>
+</nav>
 
 <script src="{{ asset('js/app.js') }}"></script>
 @yield('script')

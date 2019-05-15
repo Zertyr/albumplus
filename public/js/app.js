@@ -13043,7 +13043,7 @@ try {
   var undefined;
 
   /** Used as the semantic version number. */
-  var VERSION = '4.17.11';
+  var VERSION = '4.17.10';
 
   /** Used as the size to enable large array optimizations. */
   var LARGE_ARRAY_SIZE = 200;
@@ -13307,7 +13307,7 @@ try {
   var reHasUnicode = RegExp('[' + rsZWJ + rsAstralRange  + rsComboRange + rsVarRange + ']');
 
   /** Used to detect strings that need a more robust regexp to match words. */
-  var reHasUnicodeWord = /[a-z][A-Z]|[A-Z]{2}[a-z]|[0-9][a-zA-Z]|[a-zA-Z][0-9]|[^a-zA-Z0-9 ]/;
+  var reHasUnicodeWord = /[a-z][A-Z]|[A-Z]{2,}[a-z]|[0-9][a-zA-Z]|[a-zA-Z][0-9]|[^a-zA-Z0-9 ]/;
 
   /** Used to assign default `context` object properties. */
   var contextProps = [
@@ -14253,6 +14253,20 @@ try {
       }
     }
     return result;
+  }
+
+  /**
+   * Gets the value at `key`, unless `key` is "__proto__".
+   *
+   * @private
+   * @param {Object} object The object to query.
+   * @param {string} key The key of the property to get.
+   * @returns {*} Returns the property value.
+   */
+  function safeGet(object, key) {
+    return key == '__proto__'
+      ? undefined
+      : object[key];
   }
 
   /**
@@ -16712,7 +16726,7 @@ try {
           if (isArguments(objValue)) {
             newValue = toPlainObject(objValue);
           }
-          else if (!isObject(objValue) || isFunction(objValue)) {
+          else if (!isObject(objValue) || (srcIndex && isFunction(objValue))) {
             newValue = initCloneObject(srcValue);
           }
         }
@@ -19633,22 +19647,6 @@ try {
         array[length] = isIndex(index, arrLength) ? oldArray[index] : undefined;
       }
       return array;
-    }
-
-    /**
-     * Gets the value at `key`, unless `key` is "__proto__".
-     *
-     * @private
-     * @param {Object} object The object to query.
-     * @param {string} key The key of the property to get.
-     * @returns {*} Returns the property value.
-     */
-    function safeGet(object, key) {
-      if (key == '__proto__') {
-        return;
-      }
-
-      return object[key];
     }
 
     /**
@@ -30173,7 +30171,7 @@ module.exports = function(module) {
 /***/ (function(module, exports, __webpack_require__) {
 
 /*!
-* sweetalert2 v7.26.28
+* sweetalert2 v7.26.27
 * Released under the MIT License.
 */
 (function (global, factory) {
@@ -30443,7 +30441,7 @@ var DismissReason = Object.freeze({
   timer: 'timer'
 });
 
-var version = "7.26.28";
+var version = "7.26.27";
 
 var argsToParams = function argsToParams(args) {
   var params = {};
@@ -33429,7 +33427,6 @@ if (typeof window !== 'undefined' && window.Sweetalert2){  window.swal = window.
 "    text-transform: none;\n" +
 "    word-wrap: break-word; }\n" +
 "  .swal2-popup .swal2-actions {\n" +
-"    flex-wrap: wrap;\n" +
 "    align-items: center;\n" +
 "    justify-content: center;\n" +
 "    margin: 1.25em auto 0;\n" +
@@ -33474,7 +33471,7 @@ if (typeof window !== 'undefined' && window.Sweetalert2){  window.swal = window.
 "      -webkit-animation: swal2-rotate-loading 1.5s linear 0s infinite normal;\n" +
 "              animation: swal2-rotate-loading 1.5s linear 0s infinite normal; }\n" +
 "  .swal2-popup .swal2-styled {\n" +
-"    margin: .3125em;\n" +
+"    margin: 0 .3125em;\n" +
 "    padding: .625em 2em;\n" +
 "    font-weight: 500;\n" +
 "    box-shadow: none; }\n" +

@@ -1,6 +1,6 @@
 
 // Variables
-@import 'variables';
+@import "variables";
 
 // Bootstrap
 @import '~bootstrap/scss/bootstrap';
@@ -12,13 +12,36 @@
 @import '~magnific-popup/dist/magnific-popup.css';
 
 html, body {
-    height: 100%;
+  height: 100%;
 }
 body {
-    padding-top: 70px;
+  padding-top: 70px;
+}
+a:hover {
+  text-decoration: none;
+}
+.container-fluid {
+  padding-bottom: 70px;
+}
+.text-title, h1 {
+  color: white;
 }
 .custom-file-label::after {
-    content: "Parcourir";
+  content: "Parcourir";
+}
+.fixed-bottom {
+  opacity: 0.8;
+}
+.site-wrapper {
+  display: grid;
+  height: 100%;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  grid-template-areas: "center";
+}
+.site-wrapper-inner {
+  grid-area: center;
+  align-self: center;
 }
 .card-columns {
   @include media-breakpoint-only(sm) {
@@ -31,30 +54,10 @@ body {
     column-count: 4;
   }
 }
-.site-wrapper {
-    display: grid;
-    height: 100%;
-    grid-template-columns: 1fr;
-    grid-template-rows: 1fr;
-    grid-template-areas: "center";
-  }
-  .site-wrapper-inner {
-    grid-area: center;
-    align-self: center;
-}
-.text-title, h1 {
-    color: white;
-}
-
-a:hover {
-  text-decoration: none;
-}
-
 .star-rating {
   direction: rtl;
-  display:block;
+  display: block;
 }
-
 .star-rating div {
   display: inline-block;
   font-size: 15px;

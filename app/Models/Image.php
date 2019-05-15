@@ -15,11 +15,27 @@ class Image extends Model
     }
 
     /**
+     * Get the album that owns the image.
+     */
+    public function albums()
+    {
+        return $this->belongsToMany (Album::class);
+    }
+
+    /**
      * Get the user that owns the image.
      */
     public function user()
     {
         return $this->belongsTo (User::class);
+    }
+
+    /**
+     * Get the users that rate the image.
+     */
+    public function users()
+    {
+        return $this->belongsToMany (User::class)->withPivot('rating');
     }
 
     /**
@@ -33,19 +49,9 @@ class Image extends Model
         $user = auth()->user();
 
         if($user && $user->adult) {
-            return $query->with ('user')->latest ();
+            return $query->with ('users', 'user')->latest ();
         }
 
-        return $query->with ('user')->whereAdult(false)->latest ();
-    }
-
-    public function albums()
-    {
-        return $this->belongsToMany (Album::class);
-    }
-
-    public function users()
-    {
-        return $this->belongsToMany(User::class)->withPivot('rating');
+        return $query->with ('users', 'user')->whereAdult(false)->latest ();
     }
 }

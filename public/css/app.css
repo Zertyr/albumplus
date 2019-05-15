@@ -11993,8 +11993,6 @@ body.swal2-no-backdrop .swal2-shown.swal2-bottom-right {
 }
 
 .swal2-popup .swal2-actions {
-  -ms-flex-wrap: wrap;
-      flex-wrap: wrap;
   -webkit-box-align: center;
       -ms-flex-align: center;
           align-items: center;
@@ -12061,7 +12059,7 @@ body.swal2-no-backdrop .swal2-shown.swal2-bottom-right {
 }
 
 .swal2-popup .swal2-styled {
-  margin: .3125em;
+  margin: 0 .3125em;
   padding: .625em 2em;
   font-weight: 500;
   -webkit-box-shadow: none;
@@ -12658,8 +12656,39 @@ body {
   padding-top: 70px;
 }
 
+a:hover {
+  text-decoration: none;
+}
+
+.container-fluid {
+  padding-bottom: 70px;
+}
+
+.text-title,
+h1 {
+  color: white;
+}
+
 .custom-file-label::after {
   content: "Parcourir";
+}
+
+.fixed-bottom {
+  opacity: 0.8;
+}
+
+.site-wrapper {
+  display: grid;
+  height: 100%;
+  grid-template-columns: 1fr;
+  grid-template-rows: 1fr;
+  grid-template-areas: "center";
+}
+
+.site-wrapper-inner {
+  grid-area: center;
+  -ms-flex-item-align: center;
+      align-self: center;
 }
 
 @media (min-width: 576px) and (max-width: 767.98px) {
@@ -12681,29 +12710,6 @@ body {
     -webkit-column-count: 4;
             column-count: 4;
   }
-}
-
-.site-wrapper {
-  display: grid;
-  height: 100%;
-  grid-template-columns: 1fr;
-  grid-template-rows: 1fr;
-  grid-template-areas: "center";
-}
-
-.site-wrapper-inner {
-  grid-area: center;
-  -ms-flex-item-align: center;
-      align-self: center;
-}
-
-.text-title,
-h1 {
-  color: white;
-}
-
-a:hover {
-  text-decoration: none;
 }
 
 .star-rating {

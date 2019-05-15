@@ -11,4 +11,13 @@ if (!function_exists ('currentRoute')) {
     }
 }
 
+if (!function_exists ('currentUrl')) {
+    function currentUrl($url)
+    {
+        if (request ()->url () == url($url)) {
+            return ' active';
+        }
+    }
+}
+
 
